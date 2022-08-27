@@ -1,0 +1,5 @@
+theme: jekyll-theme-minimal
+title: Battery Status Demo
+description: Battery Status Demo
+layout: page
+permalink: /battery-status/

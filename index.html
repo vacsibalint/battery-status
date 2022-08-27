@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Battery info</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+
+  <body class="d-flex flex-column h-100">
+
+    <div class="site-wrap">
+
+      <header class="site-navbar pt-5 mt-5" role="banner">
+      </header>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+
+            <div class="image-wrap-2 pt-3 mt-3">
+              <div class="image-info">
+                <h2 class="mb-3 charging"></h2>
+                <span class="chargingTime"></span><hr style="background: white;">
+                <span class="level mt-3"></span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="footer mt-auto py-3 bg-dark">
+        <div class="container text-center pt-3">
+          <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy; 2022 All rights reserved | <a href="https://www.facebook.com/vacsibalint" target="_blank"> @ReMoTe</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+
+    <script>
+      $(document).ready(function(){
+          let isBatterySupported = 'getBattery' in navigator;
+          if(!isBatterySupported) {
+            $('.charging').text('Battery API is not supported');
+          }
+          else {
+            updateBatteryData();
+
+            setInterval(() => {
+              updateBatteryData();
+            }, 1000);
+
+            function updateBatteryData(){
+              navigator.getBattery().then((battery) => {
+                console.log(battery);
+                // Update the battery status initially when the promise resolves ...
+                updateTexts(battery);
+              }
+            );
+          }
+
+          function updateTexts(battery)
+          {
+            dischargingTime = (battery.dischargingTime) == 'Unknown' ? 'Infinity' : (battery.dischargingTime / 60).toFixed(0) + ' minutes';
+            $('.charging').text(battery.charging ? 'Charging' : 'Not Charging');
+            if(battery.charging){
+              //Add body style
+              $('.charging').css('color', '#00FF00');
+
+              if(battery.chargingTime == 0){
+                $('.chargingTime').text('Fully charged');
+              }else{
+                if(battery.chargingTime != Infinity){
+                  $('.chargingTime').text('Charging Time: ' + battery.chargingTime + ' seconds');
+                }else{
+                  $('.chargingTime').text('');
+                }
+              }
+            } else {
+              $('.charging').css('color', 'red');
+
+              if(battery.dischargingTime == Infinity){
+                $('.chargingTime').text('');
+              } else {
+                $('.chargingTime').html('Discharging Time:<br>'  + dischargingTime);
+              }
+            }
+          
+            $('.level').text('(Current level: ' + battery.level * 100 + '%)');
+            
+          }
+        }
+      });
+      </script>
+  </body>
+
+</html>
